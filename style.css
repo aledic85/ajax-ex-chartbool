@@ -41,7 +41,7 @@
   cursor: pointer;
 }
 
-#firstChart {
+#firstChart, #secondChart {
 
   margin-bottom: 30px;
 }

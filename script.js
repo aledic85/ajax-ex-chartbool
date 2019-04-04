@@ -54,11 +54,45 @@ function sumMontlyRevenues(inData) {
     amounts[month] += amount;
   };
 
+  var quarter = {
+
+    "Q1": amounts.January + amounts.February + amounts.March,
+    "Q2": amounts.April + amounts.May + amounts.June,
+    "Q3": amounts.July + amounts.August + amounts.September,
+    "Q4": amounts.October + amounts.November + amounts.December,
+  }
+
   var monthList = Object.keys(amounts);
   var amountsList = Object.values(amounts);
 
   monthlyRevenuesChart(monthList, amountsList);
   createMonthsDatalist(monthList);
+
+  var quarterList = Object.keys(quarter);
+  var amountsQuarterList = Object.values(quarter);
+
+  stampQuarterChart(quarterList, amountsQuarterList);
+}
+
+function stampQuarterChart(quarterList, amountsQuarterList) {
+
+  var ctx = document.getElementById('thirdChart').getContext('2d');
+  var chart = new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+        labels: quarterList,
+        datasets: [{
+            label: 'Quarter Revenues',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: amountsQuarterList,
+        }]
+    },
+
+    options: {}
+  });
 }
 
 function monthlyRevenuesChart(monthList, amountsList) {
