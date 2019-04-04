@@ -1,4 +1,17 @@
+function generateCanvas() {
+
+  var data = {};
+  var template = $("#template").html();
+  var compiled = Handlebars.compile(template);
+  var canvas = compiled(data);
+
+  $(".wrapper").append(canvas);
+}
+
 function getCompanySales() {
+
+  clearChart();
+  generateCanvas();
 
   $.ajax({
 
@@ -67,7 +80,6 @@ function monthlyRevenuesChart(monthList, amountsList) {
 
     options: {}
   });
-
 }
 
 function sellerContribution(inData) {
@@ -167,6 +179,12 @@ function addNewSales() {
     },
     error: function() {}
   });
+}
+
+function clearChart() {
+
+  var canvas = $(".canvas-container");
+  canvas.remove();
 }
 
 function init() {
