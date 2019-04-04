@@ -10,7 +10,7 @@ function getCompanySales() {
       sellerContribution(inData);
     },
     error: function() {}
-  })
+  });
 }
 
 function sumMontlyRevenues(inData) {
@@ -33,18 +33,19 @@ function sumMontlyRevenues(inData) {
 
   for (var i = 0; i < inData.length; i++) {
 
-    var amount = inData[i].amount;
+    var amount = Number(inData[i].amount);
     var date = inData[i].date;
     var mom = moment(date, "DD/MM/YYYY");
     var month = mom.format("MMMM");
 
     amounts[month] += amount;
-  }
+  };
 
   var monthList = Object.keys(amounts);
   var amountsList = Object.values(amounts);
 
-  monthlyRevenuesChart(monthList, amountsList)
+  monthlyRevenuesChart(monthList, amountsList);
+  createMonthsDatalist(monthList);
 }
 
 function monthlyRevenuesChart(monthList, amountsList) {
@@ -77,7 +78,7 @@ function sellerContribution(inData) {
   for (var i = 0; i < inData.length; i++) {
 
     var salesman = inData[i].salesman;
-    var amount = inData[i].amount;
+    var amount = Number(inData[i].amount);
 
     totalAmounts += amount;
     if (!salesmenAmounts[salesman]) {
@@ -85,14 +86,38 @@ function sellerContribution(inData) {
       salesmenAmounts[salesman] = 0;
     }
     salesmenAmounts[salesman] += Math.floor((amount / totalAmounts) * 100);
-  }
+  };
 
   var salesmenList = Object.keys(salesmenAmounts);
   var amountsList = Object.values(salesmenAmounts);
-  console.log(salesmenAmounts);
+
   stampSalesmenChart(salesmenList, amountsList);
+  createSalesmenDatalyst(salesmenList);
 }
 
+function createSalesmenDatalyst(salesmenList) {
+
+  for (var i = 0; i < salesmenList.length; i++) {
+
+    var salesman = salesmenList[i];
+    var object = document.createElement("option");
+
+    object.value = salesman;
+    $("#salesmen").append(object);
+  };
+}
+
+function createMonthsDatalist(monthList) {
+
+  for (var i = 0; i < monthList.length; i++) {
+
+    var month = monthList[i];
+    var object = document.createElement("option");
+
+    object.value = month;
+    $("#months").append(object);
+  };
+}
 
 function stampSalesmenChart(salesmenList, amountsList) {
 
@@ -115,9 +140,41 @@ function stampSalesmenChart(salesmenList, amountsList) {
   });
 }
 
+function addNewSales() {
+
+  var salesman = $("#salesmen-list").val();
+  var amount = $("#sel-amounts").val();
+  var month = $("#months-list").val();
+  var mom = moment(month, "MMMM");
+  mom.date(Math.floor(Math.random()*(31-1)+1));
+  mom.year(2017);
+  var RandomDate = mom.format("DD/MM/YYYY");
+
+  var outData = {
+    salesman: salesman,
+    amount: amount,
+    date: RandomDate,
+  };
+
+  $.ajax({
+
+    url: "http://157.230.17.132:4009/sales/",
+    method: "POST",
+    data: outData,
+    success: function(inData) {
+
+      getCompanySales();
+    },
+    error: function() {}
+  });
+}
+
 function init() {
 
+  var addButton = $("#add-btn");
+
   getCompanySales();
+  addButton.click(addNewSales);
 }
 
 $(document).ready(init)

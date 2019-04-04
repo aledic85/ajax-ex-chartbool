@@ -26,12 +26,23 @@
    <body>
      <div class="container">
        <div class="wrapper">
+         <div class="input-container">
+           <span>Select a seller:</span>
+           <input id="salesmen-list" type="text" list="salesmen">
+           <span>Select a month:</span>
+           <input id="months-list" type="text" list="months">
+           <span>Total sale:</span>
+           <input id="sel-amounts" type="text" name="" value="">
+           <input id="add-btn" type="button" name="" value="Add!">
+         </div>
          <div class="canvas-container">
            <canvas id="firstChart"></canvas>
          </div>
          <div class="canvas-container">
            <canvas id="secondChart"></canvas>
          </div>
+         <datalist id="salesmen"></datalist>
+         <datalist id="months"></datalist>
        </div>
      </div>
    </body>
