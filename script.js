@@ -7,7 +7,7 @@ function getCompanySales() {
     success: function(inData) {
 
       sumMontlyRevenues(inData);
-      sellerContributionChart(inData);
+      sellerContribution(inData);
     },
     error: function() {}
   })
@@ -15,35 +15,52 @@ function getCompanySales() {
 
 function sumMontlyRevenues(inData) {
 
-  var amounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var amounts = {
+
+    "January": 0,
+    "February": 0,
+    "March": 0,
+    "April": 0,
+    "May": 0,
+    "June": 0,
+    "July": 0,
+    "August": 0,
+    "September": 0,
+    "October": 0,
+    "November": 0,
+    "December": 0,
+  };
 
   for (var i = 0; i < inData.length; i++) {
 
-    var amount = Number(inData[i].amount);
+    var amount = inData[i].amount;
     var date = inData[i].date;
-    var dateSplit = date.split("/");
-    var month = dateSplit[1];
+    var mom = moment(date, "DD/MM/YYYY");
+    var month = mom.format("MMMM");
 
-    amounts[month-1] += amount;
+    amounts[month] += amount;
   }
 
-  monthlyRevenuesChart(amounts)
+  var monthList = Object.keys(amounts);
+  var amountsList = Object.values(amounts);
+
+  monthlyRevenuesChart(monthList, amountsList)
 }
 
-function monthlyRevenuesChart(amounts) {
+function monthlyRevenuesChart(monthList, amountsList) {
 
-  var ctx = document.getElementById('myChart').getContext('2d');
+  var ctx = document.getElementById('firstChart').getContext('2d');
   var chart = new Chart(ctx, {
 
     type: 'line',
 
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        labels: monthList,
         datasets: [{
             label: 'Montly Revenues',
             backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgb(255, 99, 132)',
-            data: amounts
+            data: amountsList,
         }]
     },
 
@@ -52,9 +69,50 @@ function monthlyRevenuesChart(amounts) {
 
 }
 
-function sellerContributionChart(inData) {
+function sellerContribution(inData) {
 
-  
+  var totalAmounts = 0;
+  var salesmenAmounts = {};
+
+  for (var i = 0; i < inData.length; i++) {
+
+    var salesman = inData[i].salesman;
+    var amount = inData[i].amount;
+
+    totalAmounts += amount;
+    if (!salesmenAmounts[salesman]) {
+
+      salesmenAmounts[salesman] = 0;
+    }
+    salesmenAmounts[salesman] += Math.floor((amount / totalAmounts) * 100);
+  }
+
+  var salesmenList = Object.keys(salesmenAmounts);
+  var amountsList = Object.values(salesmenAmounts);
+  console.log(salesmenAmounts);
+  stampSalesmenChart(salesmenList, amountsList);
+}
+
+
+function stampSalesmenChart(salesmenList, amountsList) {
+
+  var ctx = document.getElementById('secondChart').getContext('2d');
+  var chart = new Chart(ctx, {
+
+    type: 'pie',
+
+    data: {
+        labels: salesmenList,
+        datasets: [{
+            label: 'Montly Revenues',
+            backgroundColor: ["red", "green", "blue", "yellow"],
+            borderColor: 'rgb(255, 99, 132)',
+            data: amountsList
+        }]
+    },
+
+    options: {}
+  });
 }
 
 function init() {
