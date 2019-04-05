@@ -131,11 +131,16 @@ function sellerContribution(inData) {
 
       salesmenAmounts[salesman] = 0;
     }
-    salesmenAmounts[salesman] += Math.floor((amount / totalAmounts) * 100);
+    salesmenAmounts[salesman] += amount;
   };
 
   var salesmenList = Object.keys(salesmenAmounts);
   var amountsList = Object.values(salesmenAmounts);
+
+  for (var i = 0; i < amountsList.length; i++) {
+
+    amountsList[i] = Math.floor((amountsList[i]*100)/totalAmounts);
+  }
 
   stampSalesmenChart(salesmenList, amountsList);
   createSalesmenDatalyst(salesmenList);
